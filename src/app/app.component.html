@@ -1,0 +1,10 @@
+<header *ngIf="devMode">
+  <label for="useCaseSelect">Use Case:</label>
+  <select id="useCaseSelect" (change)="onUseCaseChange($event)">
+    <option *ngFor="let useCase of useCases" [value]="useCase.value" [selected]="currentUseCaseFromLocalStorage === useCase.value">
+      {{ useCase.label }}
+    </option>
+  </select>
+</header>
+<router-outlet />
+
