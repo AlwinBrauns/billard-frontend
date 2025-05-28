@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
     homeData: Signal<HomeResponse | null>;
     homeDataError: Signal<ErrorResponse | null>;
     homeDataLoading = signal<boolean>(false);
-    gameEvents: Observable<null | GameEvent> = of(null);
+    gameEvents: Observable<{event: GameEvent | null}> = of({event: null});
 
     constructor(private homeService: HomeService, protected authService: AuthService, private gameEventService: GameEventsListenerService, protected router: Router) {
         const _homeData$ = this.getHomeDataObservable()
@@ -75,16 +75,17 @@ export class HomeComponent implements OnInit {
                 if (homeData?.gameToListen) {
                     this.gameEvents = this.gameEventService.listenGameEvents(homeData.gameToListen)
                         .pipe(
-                            tap((gameEvent) => {
+                            map((gameEvent) => {
                                 console.log('Game event:', gameEvent);
+                                return {event: gameEvent};
                             }),
                             catchError((error) => {
                                 console.error('Error listening to game events:', error);
-                                return of(null);
+                                return of({event: null});
                             }),
                         );
                 } else {
-                    this.gameEvents = of(null);
+                    this.gameEvents = of({event: null});
                 }
             }),
             catchError(() => of(null)),

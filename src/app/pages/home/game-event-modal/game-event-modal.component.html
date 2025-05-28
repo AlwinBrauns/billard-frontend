@@ -1,8 +1,8 @@
 <div
   class="game-event-notification"
-  [ngClass]="open && gameEvent().type === 'GAME_STARTED'?newWhileOpen?['visible','updated']:['visible']:['hidden']"
+  [ngClass]="open && gameEvent().event?.type === 'GAME_STARTED'?newWhileOpen?['visible','updated']:['visible']:['hidden']"
 >
-  <ng-container *ngIf="gameEvent() as event">
+  <ng-container *ngIf="gameEvent().event as event">
     <p>Your game has started!</p>
     <button
       primary

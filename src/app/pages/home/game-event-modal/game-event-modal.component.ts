@@ -16,14 +16,14 @@ import {tap} from 'rxjs';
 })
 export class GameEventModalComponent {
 
-  gameEvent: InputSignal<GameEvent> = input.required();
+  gameEvent: InputSignal<{event: GameEvent | null}> = input.required();
   open: boolean = false;
   newWhileOpen: boolean = false;
 
   constructor(protected router: Router) {
     toObservable(this.gameEvent).pipe(
       tap((gameEvent) => {
-        if (gameEvent) {
+        if (gameEvent.event) {
           if (this.open) {
             this.newWhileOpen = true;
           }

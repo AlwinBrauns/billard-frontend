@@ -7,8 +7,7 @@
   else notLoggedIn"
 >
   <app-game-event-modal
-    *ngIf="gameEvents | async as event"
-    [gameEvent]="event"
+    [gameEvent]="(gameEvents | async) ?? {event: null}"
   ></app-game-event-modal>
   <app-loading
     *ngIf="homeDataLoading()"
