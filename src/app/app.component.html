@@ -1,10 +1,40 @@
-<header *ngIf="devMode">
-  <label for="useCaseSelect">Use Case:</label>
-  <select id="useCaseSelect" (change)="onUseCaseChange($event)">
-    <option *ngFor="let useCase of useCases" [value]="useCase.value" [selected]="currentUseCaseFromLocalStorage === useCase.value">
-      {{ useCase.label }}
-    </option>
-  </select>
-</header>
-<router-outlet />
-
+<div *ngIf="devMode" class="dev-mode-settings" [ngClass]="devWindowState">
+  <h4 style="margin: 0">Dev Tools</h4>
+  <button class="dev-window-toggle" (click)="toggleDevWindowState()">
+    <ng-container *ngIf="devWindowState === 'floating'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 16 16" role="button"
+           aria-roledescription="collapse">
+        <rect x="2" y="7" width="12" height="2"/>
+      </svg>
+    </ng-container>
+    <ng-container *ngIf="devWindowState === 'minimized'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" role="button"
+           aria-roledescription="expand">
+        <polyline points="4,10 8,6 12,10" stroke="#fff" stroke-width="2" fill="none"/>
+      </svg>
+    </ng-container>
+  </button>
+  <div>
+    <label for="mswEnabled">Msw Enabled</label>
+    <input type="checkbox" id="mswEnabled" (ngModelChange)="onMswChange($event)" [(ngModel)]="mswEnabled">
+  </div>
+  <div style="display: flex; flex-direction: column;">
+    <label style="padding-bottom: 0.3rem" for="useCaseSelect">Msw Use Case:</label>
+    <select id="useCaseSelect" class="dev-dropdown" (ngModelChange)="onUseCaseChange()" [(ngModel)]="useCase">
+      <option *ngFor="let useCase of useCases" [value]="useCase.value"
+              [selected]="currentUseCaseFromLocalStorage === useCase.value">
+        {{ useCase.label }}
+      </option>
+    </select>
+  </div>
+  <div>
+    <button primary id="mswRestoreHandlers" (click)="restoreHandlerMsw()">Msw Restore Handlers</button>
+    <br>
+    <div>
+      <label for="brickedKeycloak">Bricked Keycloak</label>
+      <input type="checkbox" id="brickedKeycloak" (ngModelChange)="onBrickedKeycloakChange($event)"
+             [(ngModel)]="brickedKeycloak">
+    </div>
+  </div>
+</div>
+<router-outlet/>

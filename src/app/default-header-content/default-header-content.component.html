@@ -1,0 +1,16 @@
+<ng-container *ngIf="back()">
+  <button style="background: none; border: none" (click)="location.back()" class="back-button">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <!-- white back arrow -->
+      <path fill="white" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+    </svg>
+  </button>
+</ng-container>
+<p role="button" style="user-select: none; font-size: 2rem; cursor: pointer" (click)="router.navigateByUrl('/home')">
+  Billard<span *ngIf="authService.userProfile()?.firstName"> - {{ authService.userProfile()?.firstName }}</span></p>
+<button terteiary *ngIf="authService.userState() !== UserState.LOGGED_IN_PAGE; else logout"
+        (click)="KeycloakInstance.login()">Login
+</button>
+<ng-template #logout>
+  <button terteiary (click)="KeycloakInstance.logout()">Logout</button>
+</ng-template>

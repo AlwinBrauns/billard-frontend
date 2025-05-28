@@ -1,0 +1,20 @@
+<li *ngIf="game() as game" class="game-item">
+  <h2>Game <span>{{ game.status }}</span></h2>
+  <p class="small">{{ game.id }}</p>
+  <p>{{ game.createDate }}</p>
+  <h3>Players</h3>
+  <ul *ngIf="game.players.length > 0; else noPlayer" class="player-list">
+    <li *ngFor="let player of game.players; index as i" class="player-item">
+      {{ player.name }}
+    </li>
+  </ul>
+  <ng-template #noPlayer>
+    <p class="small">No players yet</p>
+  </ng-template>
+  <button primary class="button-join" *ngIf="game.actions.includes('START') && game.players.length < 4"
+          (click)="router.navigateByUrl('game/' + game.id + '/join', {
+            state: game
+          })"
+  >Join Game
+  </button>
+</li>

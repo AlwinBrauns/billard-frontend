@@ -1,0 +1,35 @@
+<header app-header>
+  <app-default-header-content></app-default-header-content>
+</header>
+<main
+  class="main"
+  *ngIf="authService.userState() === UserState.LOGGED_IN_PAGE;
+  else notLoggedIn"
+>
+  <app-game-event-modal
+    *ngIf="gameEvents | async as event"
+    [gameEvent]="event"
+  ></app-game-event-modal>
+  <app-loading
+    *ngIf="homeDataLoading()"
+  ></app-loading>
+  <app-game-list
+    *ngIf="homeData() as homeResponse"
+    [homeResponse]="homeResponse"
+    [(pageNumber)]="pageNumber"
+  ></app-game-list>
+  <app-general-error
+    *ngIf="homeDataError() as error"
+    [error]="error"
+  ></app-general-error>
+</main>
+<ng-template #notLoggedIn>
+  <main class="main">
+    <p style="font-style: italic">
+      this page will reveal after login
+    </p>
+  </main>
+</ng-template>
+<footer app-footer>
+  <app-default-footer-content></app-default-footer-content>
+</footer>

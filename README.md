@@ -1,59 +1,47 @@
 # Billard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.7.
+Ein Beispielprojekt, das zeigt, wie man [MSW.js](https://mswjs.io/) mit [OpenAPI](https://swagger.io/specification/) und [Angular](https://angular.io/) integriert.
 
-## Development server
+Tipp: benutze [msw-auto-mock](https://github.com/zoubingwu/msw-auto-mock) für OpenAPI.
 
-To start a local development server, run:
+## Wichtige Ordner
 
-```bash
-ng serve
+- **src/mocks**: Konfiguration und Handler für MSW.js.
+- **src/api**, **src/assets**: OpenAPI-Spezifikation und generierte Typen. 
+
+## Skripte
+
+- `npm run generate-openapi`: Generiert Typen und Endpunkte aus der OpenAPI-Spezifikation.
+- `ng serve`: Startet die Angular-Anwendung.
+- `ng test`: Startet die Karma/Jasmine Tests.
+- `npx msw init ./src --save`: Generiert mockServiceWorker.js
+
+## Einbinden in Angular
+
+1. **angular.json** anpassen: `"src/mockServiceWorker.js"` für development und test bei assets hinzufügen
+2. **src/mocks** mocks mit handlern einbinden
+3. **main.ts** anpassen z.B. so:
+```typescript
+// Tests should manually import the worker
+async function prepareApp() {
+if (isDevMode() && !(window as any).__karma__) {
+const {worker} = await import('./mocks/browser');
+// @ts-ignore
+window.__dev = {worker: worker};
+return worker.start();
+}
+
+return Promise.resolve();
+}
+
+prepareApp().then(() => {
+bootstrapApplication(AppComponent, appConfig)
+.catch((err) => console.error(err));
+})
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Ressourcen
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [MSW.js Dokumentation](https://mswjs.io/docs)
+- [OpenAPI Spezifikation](https://swagger.io/specification/)
+- [Angular Dokumentation](https://angular.io/docs)

@@ -1,0 +1,15 @@
+<div
+  class="game-event-notification"
+  [ngClass]="open && gameEvent().type === 'GAME_STARTED'?newWhileOpen?['visible','updated']:['visible']:['hidden']"
+>
+  <ng-container *ngIf="gameEvent() as event">
+    <p>Your game has started!</p>
+    <button
+      primary
+      (click)="router.navigateByUrl('/game/' + event.game.id)"
+      style="margin-right: 1rem"
+    >Show Game
+    </button>
+    <button terteiary (click)="closeCurrentGameEvent()">Ignore</button>
+  </ng-container>
+</div>

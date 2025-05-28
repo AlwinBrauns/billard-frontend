@@ -1,0 +1,80 @@
+.dev-mode-settings {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: grid;
+  grid-gap: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.dev-mode-settings.minimized {
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  padding: 2px;
+}
+
+/* Wenn minimiert: Inhalt außer dem Toggle-Button ausblenden */
+.dev-mode-settings.minimized > :not(.dev-window-toggle) {
+  display: none !important;
+}
+
+.dev-mode-settings:hover {
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.dev-mode-settings label {
+  font-size: 0.9em;
+  margin-right: 5px;
+}
+
+.dev-mode-settings .dev-dropdown {
+  background: #fff;
+  color: #000;
+  padding: 5px 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dev-mode-settings .dev-dropdown:focus {
+  border-color: var(--color-highlight);
+}
+
+.dev-window-toggle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dev-window-toggle:hover {
+  scale: 1.1;
+}
+
+.dev-window-toggle svg {
+  transition: transform 0.3s ease;
+  transform: scale(1);
+}
+
+.dev-window-toggle:hover svg {
+  transform: scale(1.2);
+}
+

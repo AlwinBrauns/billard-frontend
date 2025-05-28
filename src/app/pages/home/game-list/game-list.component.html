@@ -1,0 +1,12 @@
+<ng-container *ngIf="homeResponse()?.gamePage as gamePage">
+  <section>
+    <div class="page-navigation" *ngIf="pageNumber() as page">
+      <button terteiary (click)="page > 1 ? pageNumber.set(page - 1) : page">Zurück</button>
+      <p>{{ gamePage.number }} von {{ gamePage.totalPages }}</p>
+      <button terteiary (click)="page < gamePage.totalPages ? pageNumber.set(page + 1) : page">Weiter</button>
+    </div>
+    <ul class="game-list">
+      <app-game-item *ngFor="let game of gamePage.content; index as i" [game]="game"></app-game-item>
+    </ul>
+  </section>
+</ng-container>

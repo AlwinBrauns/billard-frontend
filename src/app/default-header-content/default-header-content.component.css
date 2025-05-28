@@ -1,0 +1,18 @@
+:host {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  gap: 1rem;
+  place-items: start;
+  align-items: baseline;
+}
+
+p:hover {
+  text-shadow: 0 0 2px var(--color-highlight-text-shadow),
+  0 0 4px var(--color-highlight-text-shadow-background),
+  0 0 15px var(--color-highlight-text-shadow-border);
+  border-bottom: 0.1rem solid var(--color-highlight-text-shadow-background);
+}
+
+p:hover > span {
+  text-shadow: none;
+}

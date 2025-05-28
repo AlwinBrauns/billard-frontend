@@ -1,0 +1,25 @@
+section {
+  background-color: var(--color-highlight-background);
+  border: 1px solid var(--color-highlight-border);
+  border-radius: 4px;
+  padding: 20px;
+  color: var(--color-text);
+}
+
+h1 {
+  color: var(--color-highlight-text);
+}
+
+p {
+  color: var(--color-text-secondary);
+}
+
+.error-code {
+  background-color: var(--color-highlight-background-secondary);
+  border: 1px solid var(--color-highlight-border-secondary);
+  border-radius: 4px;
+  color: var(--color-highlight-text-accent);
+  padding: 16px;
+  white-space: pre-wrap;
+}
+

@@ -1,0 +1,29 @@
+<header app-header>
+  <app-default-header-content [back]="extraState !== undefined"></app-default-header-content>
+</header>
+<main class="main">
+  <app-general-error *ngIf="gameError() as gameError" [error]="gameError">
+    <p *ngIf="gameErrorStatus() === 401">Sie müssen eingeloggt sein um ein Spiel beizutreten</p>
+  </app-general-error>
+  <section *ngIf="game() as game" class="join-game">
+    <h1 style="margin: 0">Join Game</h1>
+    <h2>Players</h2>
+    <ul *ngIf="game.players.length > 0; else noPlayer" class="player-list">
+      <li *ngFor="let player of game.players; index as i" class="player-item">
+        {{ player.name }}
+      </li>
+    </ul>
+    <ng-template #noPlayer>
+      <p class="small">No players yet</p>
+    </ng-template>
+    <div style="display: flex; gap: 1rem">
+      <button primary *ngIf="game.actions.includes('START')" [disabled]="isAlreadyInGame(game.players)"
+              (click)="joinGame(game.id)">Join
+      </button>
+      <button primary *ngIf="game.actions.includes('START')" [disabled]="game.players.length < 2">Start Game</button>
+    </div>
+  </section>
+</main>
+<footer app-footer>
+  <app-default-footer-content></app-default-footer-content>
+</footer>

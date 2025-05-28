@@ -1,0 +1,8 @@
+<section>
+  <h2>Error</h2>
+  <pre class="error-code">{{ JSON.stringify(error(), null, 2) }}</pre>
+  <div #content>
+    <ng-content></ng-content>
+  </div>
+  <p *ngIf="content.children.length<1">Bitte versuchen Sie es später erneut.</p>
+</section>

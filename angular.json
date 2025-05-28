@@ -34,11 +34,23 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -83,11 +95,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/mockServiceWorker.js"
             ],
             "styles": [
-              "src/styles.css",
-              "src/mockServiceWorker.js"
+              "src/styles.css"
             ],
             "scripts": []
           }

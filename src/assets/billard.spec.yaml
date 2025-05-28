@@ -6,12 +6,28 @@ info:
 servers:
   - url: 'https://billard.bybrauns.com/api/v1'
     description: Billard API Produktionsserver
+  - url: 'https://dev.billard.bybrauns.com/api/v1'
+    description: Billard API Developmentserver
 paths:
   '/home':
     get:
       summary: Home
       description: Zeigt aktuelle Spiele und deren Status an
       operationId: getHome
+      parameters:
+        - name: page
+          in: query
+          description: Seitennummer für die Paginierung
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          description: Anzahl der Spiele pro Seite
+          schema:
+            type: integer
+            default: 10
       tags:
         - Home
       responses:
@@ -21,22 +37,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HomeResponse'
-              example:
-                - game:
-                    id: '1'
-                    status: IN_PROGRESS
-                    date: '2023-10-01T12:00:00Z'
-                    players:
-                      - id: '1'
-                        name: Player 1
-                      - id: '2'
-                        name: Player 2
-                    actions:
-                      - START
-                      - ABORT
-                      - PAUSE
-                      - RESUME
-                      - FINISH
+
   '/game':
     post:
       summary: Neues Spiel erstellen
@@ -62,6 +63,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Game'
+
   '/game/{gameId}/{action}':
     post:
       summary: Game Action
@@ -99,10 +101,60 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           description: Konflikt - Aktion kann im aktuellen Spielzustand nicht ausgeführt werden
+          $ref: '#/components/responses/ServerError'
+
+  '/game/{gameId}/events':
+    get:
+      summary: Spielereignisse
+      description: Abonnieren Sie Ereignisse für ein bestimmtes Spiel. Dazu gehört der Spielstand, beigetretende Spieler und andere Spielereignisse.
+      operationId: subscribeToGameEvents
+      tags:
+        - Game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: ID des Spiels
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Erfolgreich verbunden und empfängt Ereignisse
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/GameEvent'
+
+  '/game/{gameId}/join':
+    post:
+      summary: Spieler zu einem Spiel hinzufügen
+      description: Fügt einen Spieler zu einem bestehenden Spiel hinzu
+      operationId: joinGame
+      tags:
+        - Game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: ID des Spiels
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Spieler erfolgreich hinzugefügt
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/Game'
+        '401':
+          description: Unauthorisiert - Spieler kann nicht hinzugefügt werden
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Konflikt - Spieler kann nicht hinzugefügt werden
+          $ref: '#/components/responses/ServerError'
+
   '/game/{gameId}':
     get:
       summary: Spiel abrufen
@@ -159,14 +211,20 @@ components:
         - name
 
     HomeResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          game:
-            $ref: '#/components/schemas/Game'
-        required:
-          - game
+      type: object
+      properties:
+        gamePage:
+          $ref: '#/components/schemas/GamePage'
+        activeGamesOfUser:
+          type: array
+          items:
+            type: string
+            description: Liste der Spiele Ids, an denen der Benutzer aktiv teilnimmt und noch nicht beendet sind
+        gameToListen:
+          type: string
+          description: ID des Spiels, das der Benutzer abonniert hat oder abonnieren möchte
+      required:
+        - gamePage
 
     Player:
       type: object
@@ -186,6 +244,28 @@ components:
         - FINISHED
         - ABORTED
       description: Aktueller Status des Spiels
+
+    GamePage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - number
+        - size
 
     Game:
       type: object
@@ -211,6 +291,11 @@ components:
           type: integer
           description: Dauer des Spiels in Minuten
           nullable: true
+        winners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+          nullable: true
         status:
           $ref: '#/components/schemas/GameStatus'
         players:
@@ -226,14 +311,37 @@ components:
         - status
         - players
         - actions
+
+
+    GameEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - GAME_STARTED
+            - GAME_ABORTED
+            - GAME_PAUSED
+            - GAME_RESUMED
+            - GAME_FINISHED
+            - PLAYER_ADDED
+            - PLAYER_REMOVED
+        game:
+          $ref: '#/components/schemas/Game'
+        extra:
+          type: object
+      required:
+        - type
+        - game
+
     GameActions:
-        type: array
-        items:
-            type: string
-            enum:
-            - START
-            - ABORT
-            - PAUSE
-            - RESUME
-            - FINISH
-        description: Liste der möglichen Aktionen im aktuellen Spielzustand
+      type: array
+      items:
+        type: string
+        enum:
+          - START
+          - ABORT
+          - PAUSE
+          - RESUME
+          - FINISH
+      description: Liste der möglichen Aktionen im aktuellen Spielzustand
